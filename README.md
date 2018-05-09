@@ -45,7 +45,115 @@ errorCaptured () {
 ```
 ## computed 和 watch
 
+## component
+- `props`里声明的属性
+``` js
+props: {
+    active: {
+        type: Boolean,
+        required: true,
+        default () {
+            return {} // default为func，用于区分多处调用时的定义值
+        },
+        validator (value) {
+            return typeof value === 'boolean' // 验证func
+        }
+    }
+}
+```
+- `extends`两种使用方法
+    ``` js
+    const component = {
+        props: {},
+        template: '',
+        data () {
+            return {}
+        },
+        mounted () {},
+        methods: {}
+    }
+    cosnt CompVue = Vue.extends(component)
 
+    new CompVue({
+        el: '#root',
+        propsData: {},
+        data: {},
+        mounted () {}
+    })
+    // 与通过component定义使用类似
+    // 覆盖component的data,先执行component的mounted() ，后执行实例的mounted
+    ```
+    ``` js
+    const component2 = {
+        extends: component,
+        data () {
+            return {}
+        },
+        mounted () {}
+    }
+    // 先执行所继承的组件的mounted，在执行自身的mounted
+
+    new Vue({
+        components: {
+            Comp: component2
+        },
+        template: '<Comp></Comp>'
+    })
+    ```
+    > 在子组件中可以直接调用 this.$parent 获取到parent上的属性，但是不要直接去更改parent上的属性或方法，会引起混乱
+- `provide` `inject` 主要为高阶插件/组件库提供用例
+    ``` js
+    const ChildComponent = {
+        template: '<div>{{data.value}}</div>'
+        inject: ['ctx', 'data']
+    }
+
+    const ParentComponent = {
+        components: {
+            ChildComponent
+        },
+        provide () {
+            const data = {}
+
+            Object,defineProperty(data, 'value', {
+                get: () => this.value,
+                enumerable: true
+            })
+            return {
+                ctx: this,
+                data
+            }
+        },
+        data () {
+            return {
+                value: 11
+            }
+        }
+    }
+    ```
+    > 实现父子级或者越级获取指定的parent的属性
+
+## render 的实质
+    ``` js
+    const temp = {
+        template: '<div ref="box"><span></span></div>',
+        render (createElement) {
+            return createElement('div', {
+                ref: 'box'
+                // style: this.style
+                // on: {
+                //     click: this.handleClick
+                // }
+                // nativeOn: {}
+            },
+            [
+                createElement('span', {
+                    // ... attrs
+                }, this.value)
+            ])
+        }
+    }
+    ```
 ## vue-loader的配置 
  [vue-loader 选项参考](https://vue-loader-v14.vuejs.org/zh-cn/options.html)
 

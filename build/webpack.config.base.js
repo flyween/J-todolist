@@ -2,7 +2,7 @@
  * @Author: Ekko 
  * @Date: 2018-05-02 14:55:43 
  * @Last Modified by: Ekko
- * @Last Modified time: 2018-05-08 18:14:19
+ * @Last Modified time: 2018-05-09 14:39:09
  */
 const path = require('path')
 const createVueLoaderOptions = require('./vue-loader.config')
@@ -14,8 +14,8 @@ const config = {
   entry: path.join(__dirname, '../client/index.js'),
   output: {
     filename: 'bundle.[hash:8].js',
-    path: path.join(__dirname, '../dist')
-    // publicPath: '/public/'
+    path: path.join(__dirname, '../dist'),
+    publicPath: '/public/'
   },
   module: {
     rules: [
