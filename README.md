@@ -166,7 +166,66 @@ props: {
  - `postLoaders: {}` 在自定义loader之后应用的loader  
 
 ## 路由
-- router-view name
+- router-view name   
+```html
+<router-view />
+<router-view name="dir"/>
+```
+```js
+// router config  
+{
+    path: '/login',
+    components: {
+        // default 对应没带name属性的router-view
+        default: ComponentName,
+        dir: ComponentName
+    }
+}
+```
 
 ## 路由钩子
-beforeRouteEnter
+#### 在外部调用router对象的钩子
+
+- `router.beforeEach((to, from, next) => {})`
+
+- `router.beforeResolve((to, from, next) => {})`
+
+- `router.afterEach((to, from) => {})`
+
+#### 在路由配置选项内的钩子
+
+```js
+{
+    path: '/path',
+    component: ComponentName,
+    beforeEnter (to, from, next) {
+        console.log('brfore enter')
+        next()
+    }
+}
+```
+
+#### 在vue组件内的钩子
+```js
+export default {
+    beforeRouteEnter (to, from ,next) {
+        console.log('before enter')
+        next()
+    },
+    // 路由参数变化时触发routeUpdate
+    beforeRouteUpdate (to, from ,next) {
+        console.log('before update')
+        next()
+    },
+    beforeRouteLeave (to, from ,next) {
+        console.log('before leave')
+        next()
+    },
+    props: [],
+    data () {
+        return {}
+    }
+}
+```
+
+参见文档： [vue-router 导航钩子文档](https://router.vuejs.org/zh-cn/advanced/navigation-guards.html)
